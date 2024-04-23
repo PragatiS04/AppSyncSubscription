@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { API, graphqlOperation } from 'aws-amplify';
+import Amplify, { API, graphqlOperation } from 'aws-amplify';
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { getBookById } from "./graphql/queries/book";
-import { onBidAddedForSeller } from "./graphql/queries/queries/book"
+import { onBidAddedForSeller } from "./graphql/queries/subscriptions"
 import './App.css';
+import config from "./amplifyconfiguration.json"
 
 function App() {
 
+  Amplify.configure(config);
   const [book, setBook] = useState(null);
 
   useEffect(() => {
-    const subscription = API.graphql(graphqlOperation(onBidAddedForSeller)).subscribe({
+    const subscription = API.graphql(graphqlOperation(onBidAddedForSeller, {sellerId: "pragatisharma"})).subscribe({
       next: (result) => {
         console.log(result);
       }
